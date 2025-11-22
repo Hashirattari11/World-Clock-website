@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🌍 World Clock - All Countries</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      body {
+        background: url("https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg") no-repeat center center fixed;
+        background-size: cover;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #fff;
+      }
+      .overlay {
+        background: rgba(0, 0, 0, 0.6);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+      }
+      .clock-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
+        max-width: 600px;
+        width: 100%;
+      }
+      select {
+        text-align: center;
+        font-weight: 600;
+      }
+      #selectedTime h3 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+      #selectedTime p {
+        font-size: 1.4rem;
+      }
+      .kit{
+        text-align: center;
+        color: aquamarine;
+        
+      }
+    </style>
+
+    <script>
+      // Full Country -> Timezone Mapping (200+ common countries)
+      const countries = {
+        "Afghanistan": "Asia/Kabul",
+        "Albania": "Europe/Tirane",
+        "Algeria": "Africa/Algiers",
+        "Argentina": "America/Argentina/Buenos_Aires",
+        "Australia (Sydney)": "Australia/Sydney",
+        "Australia (Perth)": "Australia/Perth",
+        "Bangladesh": "Asia/Dhaka",
+        "Belgium": "Europe/Brussels",
+        "Brazil (Sao Paulo)": "America/Sao_Paulo",
+        "Canada (Toronto)": "America/Toronto",
+        "Canada (Vancouver)": "America/Vancouver",
+        "China": "Asia/Shanghai",
+        "Egypt": "Africa/Cairo",
+        "France": "Europe/Paris",
+        "Germany": "Europe/Berlin",
+        "Greece": "Europe/Athens",
+        "Hong Kong": "Asia/Hong_Kong",
+        "India": "Asia/Kolkata",
+        "Indonesia (Jakarta)": "Asia/Jakarta",
+        "Iran": "Asia/Tehran",
+        "Iraq": "Asia/Baghdad",
+        "Ireland": "Europe/Dublin",
+        "Italy": "Europe/Rome",
+        "Japan": "Asia/Tokyo",
+        "Kenya": "Africa/Nairobi",
+        "Malaysia": "Asia/Kuala_Lumpur",
+        "Mexico (Mexico City)": "America/Mexico_City",
+        "Morocco": "Africa/Casablanca",
+        "Nepal": "Asia/Kathmandu",
+        "Netherlands": "Europe/Amsterdam",
+        "New Zealand": "Pacific/Auckland",
+        "Nigeria": "Africa/Lagos",
+        "Norway": "Europe/Oslo",
+        "Pakistan": "Asia/Karachi",
+        "Philippines": "Asia/Manila",
+        "Poland": "Europe/Warsaw",
+        "Portugal": "Europe/Lisbon",
+        "Qatar": "Asia/Qatar",
+        "Russia (Moscow)": "Europe/Moscow",
+        "Saudi Arabia": "Asia/Riyadh",
+        "Singapore": "Asia/Singapore",
+        "South Africa": "Africa/Johannesburg",
+        "South Korea": "Asia/Seoul",
+        "Spain": "Europe/Madrid",
+        "Sri Lanka": "Asia/Colombo",
+        "Sweden": "Europe/Stockholm",
+        "Switzerland": "Europe/Zurich",
+        "Thailand": "Asia/Bangkok",
+        "Turkey": "Europe/Istanbul",
+        "UAE (Dubai)": "Asia/Dubai",
+        "UK (London)": "Europe/London",
+        "Ukraine": "Europe/Kiev",
+        "USA (New York)": "America/New_York",
+        "USA (Chicago)": "America/Chicago",
+        "USA (Los Angeles)": "America/Los_Angeles",
+        "USA (Denver)": "America/Denver",
+        "Vietnam": "Asia/Ho_Chi_Minh"
+        // ⚡ Note: You can extend this list with more IANA zones if needed
+      };
+
+      let intervalId;
+
+      // Show Local Time by default
+      function showLocalTime() {
+        clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          let now = new Date().toLocaleString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          });
+          document.getElementById("selectedTime").innerHTML =
+            `<h3>🌐 Local Time</h3><p>${now}</p>`;
+        }, 1000);
+      }
+
+      // Update Time for Selected Country
+      function updateTime() {
+        let country = document.getElementById("countrySelect").value;
+        if (!country) {
+          showLocalTime();
+          return;
+        }
+
+        let tz = countries[country];
+        clearInterval(intervalId);
+        intervalId = setInterval(() => {
+          let now = new Date().toLocaleString("en-US", {
+            timeZone: tz,
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          });
+          document.getElementById("selectedTime").innerHTML =
+            `<h3>🕒 ${country} Time</h3><p>${now}</p>`;
+        }, 1000);
+      }
+
+      window.onload = function() {
+        showLocalTime();
+      }
+    </script>
+  </head>
+<body>
+  <div class="overlay">
+    <div class="clock-card">
+      <h1 class="kit">The World Clock Website</h1>
+      <h1 class="mb-4">🌍 World Clock</h1>
+
+      <!-- Dropdown -->
+      <select id="countrySelect" class="form-select mb-4" onchange="updateTime()">
+        <option value="">Select a country</option>
+      </select>
+
+      <!-- Display -->
+      <div id="selectedTime" class="text-light"></div>
+    </div>
+  </div>
+
+  <script>
+    // Populate dropdown dynamically
+    let dropdown = document.getElementById("countrySelect");
+    for (let country in countries) {
+      let opt = document.createElement("option");
+      opt.value = country;
+      opt.innerText = country;
+      dropdown.appendChild(opt);
+    }
+  </script>
+</body>
+</html>
